@@ -29,7 +29,6 @@ void print_help();
 void print_version();
 void print_error(char *str);
 float root(struct config_t conf, float xleft, float xright, float eps, func_t func1, func_t func2);
-/* float integral(func_t func, float xleft, float xright, float eps); */
-float integral(func_t f, float xl, float xr, size_t n);
+float integral(float xl, float xr, float eps, func_t func);
 
 #endif /* AREA_H */

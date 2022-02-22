@@ -45,32 +45,6 @@ float root(struct config_t conf, float xl, float xr, float eps, func_t f1, func_
 }
 
 /*
-float root(float xleft, float xright, float eps, func_t func1, func_t func2) {
-        int steps=0;
-        float xmid = (xleft + xright) / 2;
-        while (fabs(func1(xmid) - func2(xmid)) > eps) {
-                xmid = (xleft + xright) / 2;
-
-                if (fabs(func1(xleft) - func2(xleft)) < eps)
-                        xmid = xleft;
-                else if (fabs(func1(xright) - func2(xleft)) < eps)
-                        xmid = xright;
-
-                if ((func1(xleft) - func2(xleft) < 0 ? -1 : 1) != (func1(xmid) - func2(xmid) < 0 ? -1 : 1))
-                        xright = xmid;
-                else
-                        xleft = xmid;
-
-                if((func1(xleft) - func2(xleft) < 0 ? -1 : 1) == (func1(xright) - func2(xright) < 0 ? -1 : 1)) {
-                        xmid = NAN;
-                        break;
-                }
-                steps++;
-        }
-        printf("Корень %f найден за %d итераций\n", xmid, steps);
-        return xmid;
-}
-*/
 float integral(func_t f, float xl, float xr, size_t n) {
         float sum = 0;
         float h = (xr - xl) / n;
@@ -79,19 +53,27 @@ float integral(func_t f, float xl, float xr, size_t n) {
                 xl += h; }
         return sum * h;
 }
-
-/*
-float integral(func_t func, float xleft, float xright, float eps)
-{
-        float sum = 0;
-        int n = 4;
-        float h = (xright - xleft) / n;
-        for(float x = xleft + h; x < xright - h; x += h) {
-                sum += 0.5 * h *(func(x) + func(x + h));
-        }
-        return sum;
-}
 */
+float integral(float xl, float xr, float eps, func_t func)
+{
+        float prev = 0;
+        float sum = 0;
+        float err = eps + 1;
+        int n = 4;
+
+        while (err > eps) {
+                sum = 0;
+                float h = (xr - xl) / n;
+                for (float x = xl + h; x < xr - h; x += h) {
+                        sum += 0.5 * (func(x) + func(x + h));
+                }
+                sum *= h;
+                err = fabs(sum - prev);
+                prev = sum;
+                n *= 2;
+        }
+        return prev;
+}
 
 void print_help()
 {
@@ -107,8 +89,6 @@ void print_version()
 {
         printf(APP_NAME " version %s\n", VERSION);
         printf("  Copyright (C) 2022 Andrey Lvov.\n");
-        /* printf(
-           "This is free software: you are free to change and redistribute it.\n");*/
         printf("  There is NO WARRANTY, to the extent permitted by law.\n");
 }
 
