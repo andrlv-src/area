@@ -3,6 +3,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
@@ -59,28 +60,20 @@ int main(int argc, char *argv[])
                         break;
                 }
         }
-#if 0
-        for (float i = 0.001; i < 100; i += 0.0001) {
-                if (fabs(func_one(i) - func_thr(i)) < conf.eps){
-                        printf("f1-f2 %f\n", i);
-                        break;
-                }
-        }
-#endif
         printf("Вычисление корней функций:\n1. 0.6x+3.\n2. (x-2)^3-1.\n3. 3/x.\n");
         roots[0] = root(conf, xleft, xright, conf.eps, func_one, func_two);
         roots[1] = root(conf, xleft, xright, conf.eps, func_two, func_thr);
-        roots[2] = root(conf, xleft, 1, conf.eps, func_thr, func_one);
+        roots[2] = root(conf, xleft, 1,      conf.eps, func_thr, func_one);
 
         printf("\nВычисление интегралов:\n");
-        integrals[0] = integral(roots[1], roots[2], conf.eps, func_one);
-        integrals[1] = integral(roots[1], roots[2], conf.eps, func_two);
-        integrals[2] = integral(roots[1], roots[2], conf.eps, func_thr);
+        integrals[1] = integral(roots[0], roots[1], 10000, func_one);
+        integrals[2] = integral(roots[1], roots[2], 10000, func_two);
+        integrals[2] = integral(roots[2], roots[0], 10000, func_thr);
+
         for (size_t i = 0; i < 3; ++i) {
                 printf("Интеграл %li: is %f\n", i + 1, integrals[i]);
-
         }
-        area = integrals[1] + integrals[2];
+        area = fabs(integrals[0] + integrals[1] + integrals[2]);
         printf("\nВычисление площади:\n");
         printf("Площадь: %f\n", area);
         return 0;

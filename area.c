@@ -44,35 +44,14 @@ float root(struct config_t conf, float xl, float xr, float eps, func_t f1, func_
         return xr;
 }
 
-/*
-float integral(func_t f, float xl, float xr, size_t n) {
+float integral(float xl, float xr, size_t n, func_t f) {
         float sum = 0;
         float h = (xr - xl) / n;
         for(size_t i = 0; i < n; i++) {
                 sum += f(xl);
-                xl += h; }
-        return sum * h;
-}
-*/
-float integral(float xl, float xr, float eps, func_t func)
-{
-        float prev = 0;
-        float sum = 0;
-        float err = eps + 1;
-        int n = 4;
-
-        while (err > eps) {
-                sum = 0;
-                float h = (xr - xl) / n;
-                for (float x = xl + h; x < xr - h; x += h) {
-                        sum += 0.5 * (func(x) + func(x + h));
-                }
-                sum *= h;
-                err = fabs(sum - prev);
-                prev = sum;
-                n *= 2;
+                xl += h;
         }
-        return prev;
+        return fabs(sum * h);
 }
 
 void print_help()
